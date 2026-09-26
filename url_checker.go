@@ -1,9 +1,18 @@
 package main
 
-import "regexp"
+import (
+	"errors"
+	"regexp"
+)
 
-func isUrlReal(url string) bool {
-	var urlRegexp = regexp.MustCompile(`^https?://.+`)
+const urlRegexpStr = `^https?://.+`
 
-	return urlRegexp.MatchString(url)
+func isUrlReal(url string) (bool, error) {
+	if url == "" {
+		return false, errors.New("url is empty")
+	}
+
+	var urlRegexp = regexp.MustCompile(urlRegexpStr)
+
+	return urlRegexp.MatchString(url), nil
 }
