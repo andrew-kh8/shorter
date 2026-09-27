@@ -1,25 +1,34 @@
 package main
 
 import (
-	"fmt"
 	"log"
+	"net/http"
 )
 
 func main() {
-	var userUrl string
+	http.HandleFunc("/check", checkHandler)
+	http.ListenAndServe(":8080", nil)
+}
 
-	fmt.Println("Enter a fucking url")
-	fmt.Scan(&userUrl)
+func checkHandler(w http.ResponseWriter, r *http.Request) {
+	var userUrl string = r.URL.Query().Get("url")
 
-	res, err := isUrlReal(userUrl)
+	log.Println("User url: ", userUrl)
 
-	if err != nil {
-		log.Fatal("FATAL")
-	}
+	if userUrl != "" {
+		res, err := isUrlReal(userUrl)
 
-	if res {
-		fmt.Println("Such a good boy")
+		if err != nil {
+			log.Fatal("FATAL")
+		}
+
+		if res {
+			w.Write([]byte("Such a good boy"))
+		} else {
+			w.WriteHeader(http.StatusUnprocessableEntity)
+			w.Write([]byte("IT'S NOT A FUCKING URL"))
+		}
 	} else {
-		fmt.Println("IT'S NOT A FUCKING URL")
+		http.Error(w, "No url provided", http.StatusBadRequest)
 	}
 }
