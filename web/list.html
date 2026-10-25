@@ -1,0 +1,12 @@
+<html>
+  <body>
+    <div>List</div>
+    <a href="/">BACK</a>
+    <br>
+    <ul>
+        {{ range .URLs }}
+            <li>{{ .Name }} - from {{ .URL }} to {{ .URLShort }}</li>
+        {{end}}
+    </ul>
+  </body>
+</html>
